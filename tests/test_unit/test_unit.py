@@ -1,6 +1,6 @@
 import pytest
 
-from unit.unit import Unit, UnitIsDeadException,  prettify_string, check_numeric
+from unit.unit import prettify_string, check_numeric, Unit, UnitIsDeadException
 
 
 @pytest.mark.parametrize('actual, expected', [
@@ -30,7 +30,6 @@ def test_check_numeric(actual, expected):
 
 @pytest.mark.parametrize('value, exception_type', [
     (-100, ValueError),
-    (0, ValueError),
     ('error', ValueError),
     (dir, TypeError)
 ])
@@ -39,62 +38,92 @@ def test_check_numeric_exception(value, exception_type):
         check_numeric(value)
 
 
+def test_unit_constructor():
+    soldier = Unit('Soldier', 100, 20)
+
+    assert soldier.name == 'Soldier'
+    assert soldier.hp == 100
+    assert soldier.max_hp == 100
+    assert soldier.damage == 20
+
+
+def test_unit_to_string():
+    soldier = Unit('Soldier', 100, 20)
+
+    assert str(soldier) == 'Soldier: (100/100), dmg: 20'
+
+
+def test_unit_setter():
+    soldier = Unit('Soldier', 100, 20)
+
+    assert soldier.hp == 100
+
+    soldier.hp = 50
+    assert soldier.hp == 50
+
+    soldier.hp += 50
+    assert soldier.hp == 100
+
+    soldier.hp -= 90
+    assert soldier.hp == 10
+
+    with pytest.raises(ValueError):
+        soldier.hp = -100
+
+    assert soldier.hp == 10
+
+    with pytest.raises(ValueError):
+        soldier.hp -= 100
+
+    assert soldier.hp == 10
+
+
 @pytest.mark.parametrize('actual, expected', [
-    (100, 0),
-    (150, 0),
-    (0, 100),
-    (20, 80),
+    (100, 100),
+    (50, 100),
+    (-100, 50),
+    (0, 50),
+    (25, 75)
 ])
-def test_take_damage(actual, expected):
+def test_add_hit_points(actual, expected):
     unit = Unit('Soldier', 100, 20)
-    unit.take_damage(actual)
+    unit.hp = 50
+    unit.add_hit_points(actual)
     assert unit.hp == expected
 
 
-def test_take_damage_exception():
+def test_unit_attack():
+    soldier = Unit('Soldier', 100, 20)
+    warrior = Unit('Warrior', 100, 20)
+
+    assert soldier.hp == 100
+    assert warrior.hp == 100
+
+    soldier.attack(warrior)
+
+    assert soldier.hp == 90
+    assert warrior.hp == 80
+
+
+def test_unit_attack_exception():
+    soldier = Unit('Soldier', 0, 20)
+    warrior = Unit('Warrior', 100, 20)
+
     with pytest.raises(UnitIsDeadException):
-        unit = Unit('Soldier', 100, 20)
-        unit.hp = 0
-        unit.take_damage(10)
+        soldier.attack(warrior)
 
-
-def test_attack_exception_alive():
     with pytest.raises(UnitIsDeadException):
-        unit = Unit('Soldier', 100, 20)
-        enemy = Unit('Enemy', 100, 20)
-        enemy.hp = 0
-        unit.attack(enemy)
+        soldier.counter_attack(warrior)
 
-
-@pytest.mark.parametrize('actual, expected', [
-    (20, 80),
-    (30, 70),
-    (90, 10),
-])
-def test_attack(actual, expected):
-    unit = Unit('Soldier', 100, actual)
-    enemy = Unit('Enemy', 100, actual)
-    unit.attack(enemy)
-    enemy.hp = expected
-
-
-def test_counter_attack_exception_alive():
     with pytest.raises(UnitIsDeadException):
-        unit = Unit('Soldier', 100, 20)
-        enemy = Unit('Enemy', 100, 20)
-        enemy.hp = 0
-        enemy.counter_attack(unit)
+        soldier.take_damage(warrior.damage)
+
+    with pytest.raises(TypeError):
+        warrior.attack(dir)
 
 
-@pytest.mark.parametrize('actual, expected', [
-    (20, 90),
-    (30, 85),
-    (90, 55),
-])
-def test_counter_attack(actual, expected):
-    unit = Unit('Soldier', 100, actual)
-    enemy = Unit('Enemy', 100, actual)
-    enemy.counter_attack(unit)
-    assert unit.hp == expected
+def test_damage_greater_than_hp():
+    soldier = Unit('Soldier', 20, 20)
 
-
+    soldier.take_damage(30)
+    assert soldier.hp == 0

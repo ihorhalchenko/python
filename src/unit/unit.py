@@ -12,7 +12,7 @@ def prettify_string(value: str) -> str:
 
 def check_numeric(value: int):
     value = int(value)
-    if value <= 0:
+    if value < 0:
         raise ValueError(f'value should be positive, got {value} instead')
     return value
 
@@ -46,10 +46,10 @@ class Unit:
 
     @hp.setter
     def hp(self, value) -> None:
-        self._hp = value
+        self._hp = check_numeric(value)
 
     def __str__(self) -> str:
-        return f'{self.name}: ({self.hp}/{self.max_hp}/{self.damage})'
+        return f'{self.name}: ({self.hp}/{self.max_hp}), dmg: {self.damage}'
 
     def __check_type(self, enemy: Any):
         if not isinstance(enemy, self.__class__):
@@ -58,6 +58,18 @@ class Unit:
     def __ensure_is_alive(self):
         if self.hp == 0:
             raise UnitIsDeadException()
+
+    def add_hit_points(self, hp: int) -> None:
+        self.__ensure_is_alive()
+
+        if hp <= 0:
+            return
+
+        if self.hp + hp >= self.max_hp:
+            self.hp = self.max_hp
+            return
+
+        self.hp += hp
 
     def take_damage(self, damage) -> None:
         self.__ensure_is_alive()
@@ -79,14 +91,21 @@ class Unit:
         self.__ensure_is_alive()
         self.__check_type(enemy)
 
-        enemy.take_damage(int(self.damage/2))
+        enemy.take_damage(int(self.damage / 2))
 
 
 if __name__ == '__main__':  # pragma: no cover
     unit = Unit('SoLdIeR', 100, 30)
     rogue = Unit('Rogue', 100, 20)
+
     print(unit)
     print(rogue)
+
     unit.attack(rogue)
+
     print(unit)
+    print(rogue)
+
+    rogue.add_hit_points(15)
+
     print(rogue)

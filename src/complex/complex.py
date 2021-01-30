@@ -16,11 +16,11 @@ class Complex:
 
     @re.setter
     def re(self, value: float) -> None:
-        self._re = value
+        self._re = float(value)
 
     @im.setter
     def im(self, value: float) -> None:
-        self._im = value
+        self._im = float(value)
 
     def __str__(self) -> str:
         out = f'{self.re}+{self.im}i'

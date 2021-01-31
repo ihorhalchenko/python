@@ -35,6 +35,7 @@ def test_car_refill(actual, expected):
 ])
 def test_car_refill_exception(value, exception_type):
     car = Car()
+    car.refill(30)
 
     with pytest.raises(exception_type):
         car.refill(value)

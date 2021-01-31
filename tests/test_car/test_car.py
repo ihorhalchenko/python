@@ -29,6 +29,17 @@ def test_car_refill(actual, expected):
     assert car.fuel_amount == expected
 
 
+@pytest.mark.parametrize('value, exception_type', [
+    ('error', ValueError),
+    (dir, TypeError)
+])
+def test_car_refill_exception(value, exception_type):
+    car = Car()
+
+    with pytest.raises(exception_type):
+        car.refill(value)
+
+
 def test_car_drive_to_point():
     car = Car()
     car.refill(60)
@@ -39,6 +50,19 @@ def test_car_drive_to_point():
     car.drive_to_point(Point(2, 2))
     assert round(car.fuel_amount, 2) == 58.30
     assert car.location == Point(2, 2)
+
+
+# Do we really need such test if for "dir" it raises TypeError and ValueError and raises Value error for Point
+# @pytest.mark.parametrize('value, exception_type', [
+#     ('error', ValueError),
+#     (dir, TypeError),
+#     (Point(), ValueError)
+# ])
+# def test_car_drive_to_point_exception(value, exception_type):
+#     car = Car()
+#
+#     with pytest.raises(exception_type):
+#         car.refill(value)
 
 
 def test_car_drive_to_point_exception():

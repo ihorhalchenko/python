@@ -5,6 +5,10 @@ class OutOfFuel(Exception):
     pass
 
 
+class ToMuchFuel(Exception):
+    pass
+
+
 class Car:
     def __init__(self,
                  capacity: float = 60,
@@ -44,9 +48,8 @@ class Car:
         if fuel <= 0:
             return
 
-        if self._fuel_amount + fuel >= self.fuel_capacity:
-            self._fuel_amount = self.fuel_capacity
-            return
+        if self._fuel_amount + fuel > self.fuel_capacity:
+            raise ToMuchFuel()
 
         self._fuel_amount += fuel
 

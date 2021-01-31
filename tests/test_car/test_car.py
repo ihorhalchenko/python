@@ -1,6 +1,6 @@
 import pytest
 
-from car.car import Car, Point, OutOfFuel
+from car.car import Car, Point, OutOfFuel, ToMuchFuel
 
 
 def test_car_constructor():
@@ -17,7 +17,6 @@ def test_car_constructor():
 
 
 @pytest.mark.parametrize('actual, expected', [
-    (100, 60),
     (0, 30),
     (-100, 30),
     (20, 50)
@@ -30,6 +29,7 @@ def test_car_refill(actual, expected):
 
 
 @pytest.mark.parametrize('value, exception_type', [
+    (100, ToMuchFuel),
     ('error', ValueError),
     (dir, TypeError)
 ])

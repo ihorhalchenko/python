@@ -53,24 +53,16 @@ def test_car_drive_to_point():
     assert car.location == Point(2, 2)
 
 
-# Do we really need such test if for "dir" it raises TypeError and ValueError and raises Value error for Point
-# @pytest.mark.parametrize('value, exception_type', [
-#     ('error', ValueError),
-#     (dir, TypeError),
-#     (Point(), ValueError)
-# ])
-# def test_car_drive_to_point_exception(value, exception_type):
-#     car = Car()
-#
-#     with pytest.raises(exception_type):
-#         car.refill(value)
-
-
-def test_car_drive_to_point_exception():
+@pytest.mark.parametrize('value, exception_type', [
+    ('error', TypeError),
+    (dir, TypeError),
+    (Point(100, 100), OutOfFuel)
+])
+def test_car_drive_to_point_exception(value, exception_type):
     car = Car()
-    car.refill(60)
-    with pytest.raises(OutOfFuel):
-        car.drive_to_point(Point(100, 100))
+
+    with pytest.raises(exception_type):
+        car.drive_to_point(value)
 
 
 def test_car_drive():

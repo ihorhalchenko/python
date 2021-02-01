@@ -64,3 +64,9 @@ class Car:
 
     def drive(self, x: float, y: float) -> None:
         self.drive_to_point(Point(float(x), float(y)))
+
+
+if __name__ == '__main__':  # pragma: no cover
+    car = Car()
+    car.refill(60)
+    car.drive_to_point(Point(0, 0))

@@ -16,6 +16,16 @@ def test_car_constructor():
     assert car2.model == 'Toyota'
 
 
+def test_car_to_string():
+    car = Car(70, 0.8, Point(1, 1), 'Toyota')
+
+    assert str(car) == 'Car location: (1.0, 1.0)\n' \
+                       'Fuel amount: 0\n' \
+                       'Fuel capacity: 70.0\n' \
+                       'Fuel consumption: 0.8\n' \
+                       'Car model: Toyota\n'
+
+
 @pytest.mark.parametrize('actual, expected', [
     (0, 30),
     (-100, 30),

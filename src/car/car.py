@@ -42,6 +42,13 @@ class Car:
     def model(self) -> str:
         return self._model
 
+    def __str__(self) -> str:
+        return f'Car location: {self._location}\n' \
+               f'Fuel amount: {self._fuel_amount}\n' \
+               f'Fuel capacity: {self._fuel_capacity}\n' \
+               f'Fuel consumption: {self._fuel_consumption}\n' \
+               f'Car model: {self._model}\n'
+
     def refill(self, fuel: float) -> None:
         fuel = float(fuel)
 
@@ -68,5 +75,7 @@ class Car:
 
 if __name__ == '__main__':  # pragma: no cover
     car = Car()
+    print(car)
     car.refill(60)
     car.drive_to_point(Point(0, 0))
+    print(car)

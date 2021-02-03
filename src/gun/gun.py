@@ -8,8 +8,8 @@ class OutOfRounds(Exception):
 
 class Gun:
     def __init__(self, model: str = 'Beretta', capacity: int = 8) -> None:
-        self._model = model
-        self._capacity = capacity
+        self._model = str(model)
+        self._capacity = int(capacity)
         self._amount = 0
         self._is_ready = False
         self._total_shots = 0
